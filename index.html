@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>侠客汇 × 微企付 · 3C数码支付Demo</title>
+<style>
+/*
+  设计系统
+  --------
+  侠客汇金：#C8A45C  侠客汇黑：#1A1A1A
+  微企付蓝：#1677FF  银行红：#D4000E  成功绿：#07C160
+  中性色梯度：#1D2129 → #4E5969 → #86909C → #C9CDD4 → #E5E6EB → #F2F3F5 → #F7F8FA
+*/
+:root {
+  --xkh-gold: #C8A45C;
+  --xkh-gold-light: #F5ECD8;
+  --xkh-gold-dark: #A07830;
+  --xkh-black: #1A1A1A;
+  --brand: #07C160;
+  --brand-light: #E8FFF0;
+  --brand-dark: #06A24E;
+  --success: #07C160;
+  --success-light: #E8FFF0;
+  --warning: #FF6A00;
+  --danger: #F53F3F;
+  --text-1: #1D2129;
+  --text-2: #4E5969;
+  --text-3: #86909C;
+  --text-4: #C9CDD4;
+  --border: #E5E6EB;
+  --bg: #F7F8FA;
+  --bg-2: #F2F3F5;
+  --white: #FFFFFF;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --font: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Code", monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: var(--font);
+  background: #EBEDF0;
+  color: var(--text-1);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ==================== 双栏布局 ==================== */
+.demo-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) 415px;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* ==================== 左栏：店员 PC 端 ==================== */
+.staff-side {
+  display: flex;
+  flex-direction: column;
+  background: var(--xkh-black);
+  color: var(--white);
+}
+
+/* 顶栏 */
+.staff-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.xkh-logo-box {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--xkh-gold), var(--xkh-gold-dark));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: var(--white);
+}
+
+.topbar-title h1 { font-size: 16px; font-weight: 600; }
+.topbar-title .sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+.topbar-right {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--xkh-gold);
+}
+.topbar-right .online-dot {
+  width: 7px; height: 7px;
+  background: var(--success);
+  border-radius: 50%;
+}
+
+/* 步骤条 */
+.staff-steps {
+  display: flex;
+  align-items: center;
+  padding: 14px 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  gap: 0;
+}
+.sstep {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: rgba(255,255,255,0.3);
+  transition: color 0.3s;
+  white-space: nowrap;
+}
+.sstep.active { color: var(--xkh-gold); font-weight: 600; }
+.sstep.done { color: var(--success); }
+.sstep-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+.sstep.active .sstep-dot { background: var(--xkh-gold); width: 9px; height: 9px; }
+.sstep.done .sstep-dot { background: var(--success); }
+.sstep-line {
+  flex: 1; height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 0 8px;
+}
+
+/* 主体内容 */
+.staff-body {
+  flex: 1;
+  padding: 24px 28px 28px;
+  overflow-y: auto;
+}
+
+.sec-title {
+  font-size: 14px; font-weight: 600;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sec-num {
+  width: 22px; height: 22px;
+  background: var(--xkh-gold);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--white);
+}
+
+/* 商品分类 tabs */
+.cat-tabs {
+  display: flex; gap: 8px; margin-bottom: 16px;
+}
+.cat-tab {
+  padding: 8px 18px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.cat-tab:hover { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.7); }
+.cat-tab.active {
+  border-color: var(--xkh-gold);
+  color: var(--xkh-gold);
+  background: rgba(200,164,92,0.08);
+}
+.cat-tab svg { width: 16px; height: 16px; }
+
+/* 商品列表 */
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.prod-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.prod-item:hover {
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+}
+.prod-item.selected {
+  border-color: var(--xkh-gold);
+  background: rgba(200,164,92,0.06);
+}
+
+.prod-check {
+  width: 20px; height: 20px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.prod-item.selected .prod-check {
+  background: var(--xkh-gold);
+  border-color: var(--xkh-gold);
+}
+.prod-check svg { width: 12px; height: 12px; opacity: 0; transition: opacity 0.2s; }
+.prod-item.selected .prod-check svg { opacity: 1; }
+
+.prod-info {
+  min-width: 0;
+}
+.prod-name {
+  font-size: 14px; font-weight: 500; color: var(--white);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.prod-spec {
+  font-size: 12px; color: var(--text-3); margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.prod-condition {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.prod-item.selected .prod-condition { background: rgba(200,164,92,0.12); color: var(--xkh-gold); }
+
+.prod-price {
+  font-family: var(--mono);
+  font-size: 16px; font-weight: 700;
+  color: var(--white);
+  white-space: nowrap;
+  text-align: right;
+}
+.prod-price .yen { font-size: 12px; font-weight: 500; }
+
+/* 购物车摘要 */
+.cart-summary {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.cart-empty {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-3);
+  padding: 12px 0;
+}
+.cart-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+}
+.cart-row .cl { color: var(--text-3); }
+.cart-row .cv { color: var(--white); font-weight: 500; }
+.cart-row.total {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin-top: 6px;
+  padding-top: 12px;
+}
+.cart-row.total .cv {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: var(--mono);
+  color: #FF6B6B;
+}
+.cart-row.total .cv .yen { font-size: 14px; margin-right: 2px; }
+
+/* 下单按钮 */
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.submit-btn.primary {
+  background: linear-gradient(135deg, var(--xkh-gold), var(--xkh-gold-dark));
+  color: var(--white);
+}
+.submit-btn.primary:hover { filter: brightness(1.08); }
+.submit-btn:disabled {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.2);
+  cursor: not-allowed;
+  filter: none;
+}
+.submit-btn svg { width: 18px; height: 18px; }
+
+/* 已下单状态 */
+.order-done-panel { display: none; }
+.staff-body[data-state="ordered"] .order-form-panel { display: none; }
+.staff-body[data-state="ordered"] .order-done-panel { display: block; }
+
+.done-card {
+  background: rgba(7,193,96,0.08);
+  border: 1px solid rgba(7,193,96,0.2);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.done-icon {
+  width: 48px; height: 48px;
+  background: var(--success);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+}
+.done-icon svg { width: 24px; height: 24px; color: var(--white); }
+.done-title { font-size: 16px; font-weight: 600; color: var(--success); margin-bottom: 6px; }
+.done-desc { font-size: 13px; color: var(--text-3); line-height: 1.6; }
+
+.done-detail {
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.done-row {
+  display: flex; justify-content: space-between;
+  padding: 7px 0; font-size: 13px;
+}
+.done-row .dl { color: var(--text-3); }
+.done-row .dv { color: var(--white); font-weight: 500; }
+.done-row .dv.mono { font-family: var(--mono); font-size: 12px; }
+.done-row .dv.price { color: #FF6B6B; font-family: var(--mono); font-weight: 700; }
+
+.done-actions {
+  display: flex; gap: 10px;
+}
+.btn-qr {
+  flex: 1;
+  padding: 12px;
+  background: var(--xkh-gold);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+}
+.btn-reset {
+  padding: 12px 18px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: var(--font);
+}
+
+.btn-qr.disabled {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.2);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.done-card.paid {
+  background: rgba(7,193,96,0.12);
+  border-color: rgba(7,193,96,0.3);
+}
+
+/* ==================== 右栏：客户手机端 ==================== */
+.customer-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-2);
+  padding: 16px 12px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.side-label {
+  font-size: 13px; font-weight: 600;
+  color: var(--text-2); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+.side-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
+
+/* 手机壳 */
+.phone-frame {
+  width: 375px; height: 720px;
+  background: var(--white);
+  border-radius: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.06);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.status-bar {
+  height: 44px;
+  padding: 12px 24px 0;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 14px; font-weight: 600; flex-shrink: 0;
+}
+.status-bar .time { font-variant-numeric: tabular-nums; }
+.status-bar .icons { display: flex; gap: 4px; align-items: center; }
+.status-bar .icons svg { width: 16px; height: 16px; }
+
+.screen {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.screen.active { display: flex; }
+
+/* 共用导航栏 */
+.nav-bar {
+  height: 44px;
+  display: flex; align-items: center;
+  padding: 0 16px;
+  border-bottom: 0.5px solid var(--border);
+  flex-shrink: 0; gap: 10px;
+}
+.nav-bar .back-btn {
+  width: 28px; height: 28px;
+  border: none; background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; transition: background 0.15s;
+}
+.nav-bar .back-btn:hover { background: var(--bg); }
+.nav-bar .back-btn svg { width: 20px; height: 20px; }
+.nav-bar .nav-title { font-size: 16px; font-weight: 600; flex: 1; }
+.nav-bar .nav-right { font-size: 12px; color: var(--text-3); }
+
+.screen-body { flex: 1; overflow-y: auto; background: var(--bg); }
+
+/* ==================== 等待页 ==================== */
+.wait-body {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 40px;
+  background: var(--bg);
+}
+.wait-icon {
+  width: 72px; height: 72px;
+  background: var(--bg-2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+}
+.wait-icon svg { width: 32px; height: 32px; color: var(--text-4); }
+.wait-title { font-size: 16px; font-weight: 600; color: var(--text-1); margin-bottom: 8px; }
+.wait-desc { font-size: 13px; color: var(--text-3); line-height: 1.6; }
+
+/* ==================== 微企付收银台（从s1开始完整复用） ==================== */
+/* 收银台头部 */
+.cashier-header {
+  background: var(--white); padding: 20px 20px 16px;
+}
+.cashier-meta { font-size: 12px; color: var(--text-3); display: flex; gap: 16px; }
+.cashier-title-text { font-size: 14px; color: var(--text-2); margin-top: 12px; }
+.cashier-amount {
+  font-size: 36px; font-weight: 700; color: var(--text-1);
+  margin-top: 4px; font-variant-numeric: tabular-nums;
+}
+.cashier-amount .c-yen { font-size: 20px; vertical-align: 3px; margin-right: 2px; }
+.cashier-divider { height: 8px; background: var(--bg); }
+
+/* 支付方式选择 */
+.pay-section { background: var(--white); padding: 16px 20px; position: relative; }
+.pay-label { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+.pay-actual {
+  position: absolute; right: 20px; top: 16px;
+  font-size: 12px; color: var(--text-3);
+}
+.pay-actual strong { font-size: 16px; font-weight: 700; color: var(--text-1); }
+.pay-options { display: flex; gap: 10px; margin-top: 12px; }
+.pay-opt {
+  flex: 1; min-height: 64px; padding: 12px 14px;
+  border-radius: 10px; border: 1.5px solid var(--border);
+  background: var(--white); display: flex; align-items: center; gap: 10px;
+  cursor: pointer; font-family: var(--font); font-size: 14px;
+  font-weight: 500; color: var(--text-1); transition: all 0.2s; text-align: left;
+}
+.pay-opt:hover { border-color: #C9CDD4; background: var(--bg); }
+.pay-opt.selected { border-color: var(--success); background: #F0FFF5; }
+.pay-opt.selected .po-name { color: #07A84B; }
+.pay-opt .po-icon {
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  background: var(--brand); display: flex; align-items: center; justify-content: center;
+}
+.pay-opt .po-icon svg { width: 20px; height: 20px; color: var(--white); }
+.pay-opt .po-text { flex: 1; min-width: 0; }
+.pay-opt .po-name { font-size: 14px; font-weight: 600; line-height: 1.3; }
+.pay-opt .po-tag { font-size: 10px; color: var(--text-3); margin-top: 2px; font-weight: 400; }
+
+.cashier-countdown {
+  text-align: center; padding: 16px 0; font-size: 12px;
+  color: var(--text-3); background: var(--white);
+}
+.cashier-countdown .ct-time { color: var(--brand); font-weight: 600; font-family: var(--mono); }
+
+.cashier-btn {
+  margin: 16px 20px; height: 48px; border-radius: 10px; border: none;
+  background: var(--success); color: var(--white); font-size: 16px;
+  font-weight: 600; cursor: pointer; font-family: var(--font);
+  width: calc(100% - 40px); transition: all 0.15s;
+}
+.cashier-btn:hover { background: #06A24E; }
+.cashier-btn:active { transform: scale(0.98); }
+
+.cashier-footer {
+  padding: 12px 20px 20px; display: flex;
+  align-items: center; justify-content: center; gap: 6px; margin-top: auto;
+}
+.cashier-footer span { font-size: 13px; color: var(--text-3); font-weight: 500; }
+
+/* ==================== 微企付二维码 ==================== */
+.qr-body {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; padding: 24px 20px; background: var(--white);
+}
+.qr-amount {
+  font-size: 32px; font-weight: 700; color: var(--text-1);
+  font-variant-numeric: tabular-nums;
+}
+.qr-amount .qr-yen { font-size: 18px; vertical-align: 3px; margin-right: 2px; }
+.qr-merchant { font-size: 13px; color: var(--text-3); margin-top: 4px; margin-bottom: 24px; }
+.qr-box {
+  width: 200px; height: 200px; position: relative;
+  cursor: pointer; transition: transform 0.15s;
+}
+.qr-box:hover { transform: scale(1.02); }
+.qr-box:active { transform: scale(0.98); }
+.qr-box canvas { width: 200px; height: 200px; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.qr-center-logo {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 40px; height: 40px; background: var(--white); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.qr-center-logo .logo-inner {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, var(--xkh-gold), var(--xkh-gold-dark));
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--white);
+}
+.qr-tap-hint {
+  position: absolute; inset: 0;
+  background: rgba(22,119,255,0.08); border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  animation: hintPulse 2s infinite;
+}
+.qr-tap-hint span {
+  background: var(--brand); color: var(--white); font-size: 12px; font-weight: 600;
+  padding: 6px 14px; border-radius: 20px; box-shadow: 0 2px 8px rgba(22,119,255,0.3);
+}
+.qr-tip {
+  margin-top: 20px; font-size: 14px; color: var(--text-2); font-weight: 500;
+  display: flex; align-items: center; gap: 6px;
+}
+.qr-tip svg { width: 18px; height: 18px; color: var(--brand); }
+.qr-timer { margin-top: 8px; font-size: 13px; color: var(--text-3); }
+.qr-timer .qr-time { color: var(--warning); font-weight: 600; font-family: var(--mono); }
+
+.qr-steps { width: 100%; margin-top: 28px; padding-top: 20px; border-top: 1px dashed var(--border); }
+.qr-steps-label { font-size: 12px; color: var(--text-3); text-align: center; margin-bottom: 14px; }
+.steps-row { display: flex; align-items: flex-start; justify-content: center; gap: 0; }
+.step-i { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 70px; }
+.step-i .step-n {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--brand-light); color: var(--brand);
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-i .step-t { font-size: 11px; color: var(--text-2); text-align: center; line-height: 1.3; }
+.step-arr { width: 16px; height: 16px; color: var(--text-3); margin-top: 4px; flex-shrink: 0; }
+
+/* ==================== 微企付 APP 收银台 ==================== */
+.app-cashier { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
+.app-card {
+  background: var(--white); margin: 12px 16px 0;
+  border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);
+}
+.app-merchant-row { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.app-merchant-logo {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--xkh-gold), var(--xkh-gold-dark));
+  display: flex; align-items: center; justify-content: center;
+  color: var(--white); font-size: 14px; font-weight: 700;
+}
+.app-merchant-name { font-size: 15px; font-weight: 600; }
+.app-merchant-desc { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.app-amount-area { text-align: center; padding: 24px 0 12px; }
+.app-amount-label { font-size: 13px; color: var(--text-3); }
+.app-amount-num { font-size: 38px; font-weight: 700; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.app-amount-num .app-yen { font-size: 20px; vertical-align: 4px; margin-right: 2px; }
+
+.app-pay-method {
+  background: var(--white); margin: 12px 16px 0;
+  border-radius: var(--radius); padding: 0; box-shadow: var(--shadow);
+}
+.app-method-item {
+  display: flex; align-items: center; gap: 12px; padding: 16px;
+  cursor: pointer; transition: background 0.15s;
+}
+.app-method-item:hover { background: var(--bg); }
+.app-method-item + .app-method-item { border-top: 0.5px solid var(--border); }
+.app-method-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.app-method-icon.icbc { background: #FFF0E0; }
+.app-method-icon.ccb { background: #E8F0FF; }
+.app-method-icon svg { width: 22px; height: 22px; }
+.app-method-info { flex: 1; }
+.app-method-name { font-size: 14px; font-weight: 500; }
+.app-method-desc { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.app-method-radio {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--border); position: relative; transition: all 0.2s;
+}
+.app-method-radio.checked { border-color: var(--brand); }
+.app-method-radio.checked::after {
+  content: ''; width: 10px; height: 10px;
+  background: var(--brand); border-radius: 50%;
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+}
+.app-confirm-btn {
+  margin: 20px 16px; height: 48px; border-radius: 10px; border: none;
+  background: var(--brand); color: var(--white); font-size: 16px; font-weight: 600;
+  cursor: pointer; font-family: var(--font); width: calc(100% - 32px); transition: all 0.15s;
+}
+.app-confirm-btn:hover { background: var(--brand-dark); }
+.app-confirm-btn:active { transform: scale(0.98); }
+.app-secure {
+  text-align: center; font-size: 12px; color: var(--text-3);
+  padding-bottom: 16px; margin-top: auto;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+.app-secure svg { width: 14px; height: 14px; }
+
+/* ==================== 银行 APP ==================== */
+.bank-app { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
+.bank-app-card {
+  background: var(--white); margin: 12px 16px 0;
+  border-radius: var(--radius); padding: 24px 20px;
+  box-shadow: var(--shadow); text-align: center;
+}
+.bank-payee-label { font-size: 13px; color: var(--text-3); }
+.bank-payee-name { font-size: 16px; font-weight: 600; margin-top: 4px; }
+.bank-app-amount { font-size: 42px; font-weight: 700; margin: 16px 0 8px; font-variant-numeric: tabular-nums; }
+.bank-app-amount .bank-yen { font-size: 22px; vertical-align: 5px; margin-right: 2px; }
+.bank-detail-card {
+  background: var(--white); margin: 12px 16px 0;
+  border-radius: var(--radius); padding: 16px 20px; box-shadow: var(--shadow);
+}
+.bank-d-row { display: flex; justify-content: space-between; padding: 10px 0; }
+.bank-d-row + .bank-d-row { border-top: 0.5px solid var(--border); }
+.bank-d-label { font-size: 13px; color: var(--text-3); }
+.bank-d-value { font-size: 13px; color: var(--text-1); font-weight: 500; text-align: right; }
+.bank-pay-btn {
+  margin: 24px 16px 12px; height: 48px; border-radius: 10px; border: none;
+  background: #D4000E; color: var(--white); font-size: 16px; font-weight: 600;
+  cursor: pointer; font-family: var(--font); width: calc(100% - 32px); transition: all 0.15s;
+}
+.bank-pay-btn:hover { background: #B8000C; }
+.bank-pay-btn:active { transform: scale(0.98); }
+.bank-pwd-hint { text-align: center; font-size: 12px; color: var(--text-3); padding-bottom: 16px; }
+
+/* 密码弹窗 */
+.pwd-modal {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.4);
+  display: none; align-items: flex-end; z-index: 60;
+  border-radius: 40px; overflow: hidden;
+}
+.pwd-modal.show { display: flex; }
+.pwd-sheet {
+  width: 100%; background: var(--white);
+  border-radius: 16px 16px 0 0; padding: 24px 20px 32px;
+  animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.pwd-sheet-title { text-align: center; font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.pwd-sheet-amount { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 20px; }
+.pwd-dots { display: flex; gap: 12px; justify-content: center; margin: 20px 0; }
+.pwd-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--border); transition: background 0.2s;
+}
+.pwd-dot.filled { background: var(--text-1); }
+
+/* ==================== 支付成功 ==================== */
+.success-body {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: var(--white); padding: 40px 20px;
+}
+.success-icon {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--success); display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px; animation: successPop 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.success-icon svg { width: 36px; height: 36px; color: var(--white); }
+.success-title { font-size: 20px; font-weight: 700; color: var(--text-1); }
+.success-amount { font-size: 32px; font-weight: 700; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.success-amount .s-yen { font-size: 18px; vertical-align: 3px; margin-right: 2px; }
+.success-merchant { font-size: 13px; color: var(--text-3); margin-top: 6px; margin-bottom: 24px; }
+.success-detail-card {
+  width: 100%; background: var(--bg); border-radius: var(--radius); padding: 16px 20px;
+}
+.sd-row { display: flex; justify-content: space-between; padding: 8px 0; }
+.sd-row + .sd-row { border-top: 0.5px solid var(--border); }
+.sd-row .sdl { font-size: 13px; color: var(--text-3); }
+.sd-row .sdv { font-size: 13px; color: var(--text-1); font-weight: 500; }
+.success-done-btn {
+  margin-top: 24px; height: 44px; padding: 0 48px;
+  border-radius: 22px; border: 1.5px solid var(--brand);
+  background: var(--white); color: var(--brand);
+  font-size: 15px; font-weight: 600; cursor: pointer; font-family: var(--font);
+  transition: all 0.15s;
+}
+.success-done-btn:hover { background: var(--brand-light); }
+
+/* ==================== QR 弹层（PC侧） ==================== */
+.qr-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none; align-items: center; justify-content: center;
+  z-index: 200; backdrop-filter: blur(4px);
+}
+.qr-overlay.show { display: flex; }
+.qr-overlay-card {
+  background: var(--white); border-radius: 20px;
+  padding: 36px 40px; text-align: center;
+  box-shadow: var(--shadow-lg); max-width: 380px; width: 90%;
+  animation: fadeUp 0.35s ease;
+}
+.qr-overlay-merchant {
+  display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 16px;
+}
+.qr-overlay-merchant .qr-ml {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--xkh-black);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--xkh-gold); font-weight: 700; font-size: 14px;
+}
+.qr-overlay-merchant .qr-mn { font-size: 15px; font-weight: 600; text-align: left; }
+.qr-overlay-merchant .qr-ms { font-size: 11px; color: var(--text-3); text-align: left; }
+.qr-overlay-amount {
+  font-size: 32px; font-weight: 700; font-family: var(--mono);
+  color: var(--text-1); margin: 12px 0 4px;
+}
+.qr-overlay-amount .yen { font-size: 18px; }
+.qr-overlay-orderno { font-size: 12px; color: var(--text-3); font-family: var(--mono); margin-bottom: 20px; }
+.qr-overlay-canvas-wrap {
+  position: relative; display: inline-block; margin-bottom: 16px; cursor: pointer;
+}
+.qr-overlay-canvas-wrap .hint {
+  position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+  background: var(--brand); color: var(--white); font-size: 12px;
+  padding: 4px 12px; border-radius: 10px; white-space: nowrap;
+  animation: hintPulse 2s infinite;
+}
+.qr-overlay-expire { font-size: 13px; color: var(--text-3); }
+.qr-overlay-expire .t { color: var(--warning); font-weight: 600; font-family: var(--mono); }
+.qr-overlay-powered {
+  margin-top: 16px; font-size: 12px; color: var(--text-4);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.qr-overlay-powered .wtag {
+  background: var(--brand); color: var(--white); padding: 2px 8px;
+  border-radius: 4px; font-weight: 600; font-size: 11px;
+}
+.qr-overlay-close {
+  position: absolute; top: 20px; right: 20px;
+  width: 32px; height: 32px; background: rgba(0,0,0,0.06);
+  border: none; border-radius: 50%; font-size: 16px; cursor: pointer;
+  color: var(--text-2); display: flex; align-items: center; justify-content: center;
+}
+
+/* ==================== 加载 ==================== */
+.loading-overlay {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.9);
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 50; border-radius: 40px;
+}
+.loading-overlay.show { display: flex; }
+.loading-spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--brand);
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+.loading-text { font-size: 13px; color: var(--text-2); margin-top: 12px; }
+
+/* ==================== 动画 ==================== */
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes successPop { 0% { transform:scale(0); } 60% { transform:scale(1.15); } 100% { transform:scale(1); } }
+@keyframes hintPulse { 0%,100% { background:rgba(22,119,255,0.04); } 50% { background:rgba(22,119,255,0.12); } }
+@keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+@keyframes spin { to { transform:rotate(360deg); } }
+.fade-up { animation: fadeUp 0.35s cubic-bezier(0.4,0,0.2,1) both; }
+
+/* Toast */
+.toast {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%,-50%) scale(0.8);
+  background: rgba(0,0,0,0.75); color: var(--white);
+  padding: 10px 20px; border-radius: 8px; font-size: 13px;
+  z-index: 9999; opacity: 0;
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none; white-space: nowrap;
+}
+.toast.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 960px) {
+  .demo-layout { grid-template-columns: 1fr; max-width: 100%; }
+  .customer-side { padding: 20px 12px; }
+}
+@media (max-width: 480px) {
+  .phone-frame { width: 100%; height: 600px; border-radius: 0; box-shadow: none; }
+  .cat-tabs { flex-wrap: wrap; }
+  .staff-body { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="demo-layout">
+  <!-- ====== 左栏：店员PC端 ====== -->
+  <div class="staff-side">
+    <div class="staff-topbar">
+      <div class="topbar-left">
+        <div class="xkh-logo-box">侠</div>
+        <div class="topbar-title">
+          <h1>侠客汇 · 门店收银</h1>
+          <div class="sub">3C数码交易平台</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="online-dot"></span>
+        店员 张伟
+      </div>
+    </div>
+
+    <div class="staff-steps" id="staffSteps">
+      <div class="sstep active" data-s="0"><span class="sstep-dot"></span>选商品</div>
+      <div class="sstep-line"></div>
+      <div class="sstep" data-s="1"><span class="sstep-dot"></span>确认订单</div>
+      <div class="sstep-line"></div>
+      <div class="sstep" data-s="2"><span class="sstep-dot"></span>生成付款码</div>
+      <div class="sstep-line"></div>
+      <div class="sstep" data-s="3"><span class="sstep-dot"></span>客户扫码支付</div>
+    </div>
+
+    <div class="staff-body" id="staffBody" data-state="form">
+      <!-- 表单态 -->
+      <div class="order-form-panel">
+        <div class="sec-title"><span class="sec-num">1</span> 选择商品</div>
+        <div class="cat-tabs" id="catTabs"></div>
+        <div class="product-list" id="productList"></div>
+
+        <div class="sec-title"><span class="sec-num">2</span> 订单确认</div>
+        <div class="cart-summary" id="cartSummary">
+          <div class="cart-empty">请在上方选择商品</div>
+        </div>
+
+        <button class="submit-btn primary" id="submitBtn" disabled onclick="submitOrder()">
+          <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h14" stroke="currentColor" stroke-width="1.4"/><path d="M6 11h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          提交订单 · 生成付款码
+        </button>
+      </div>
+
+      <!-- 已下单态 -->
+      <div class="order-done-panel">
+        <div class="done-card" id="doneCard">
+          <div class="done-icon" id="doneIcon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="done-title" id="doneTitle">订单已创建</div>
+          <div class="done-desc" id="doneDesc">请引导客户使用微信扫描二维码<br>完成微企付支付</div>
+        </div>
+        <div class="done-detail" id="doneDetail"></div>
+        <div class="done-actions">
+          <button class="btn-qr" id="btnQr" onclick="showQROverlay()">再次展示付款码</button>
+          <button class="btn-reset" onclick="resetAll()">重新下单</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 右栏：客户手机端 ====== -->
+  <div class="customer-side">
+    <div class="side-label"><span class="dot"></span>客户手机端（微信扫码后）</div>
+    <div class="phone-frame" id="phone">
+      <div class="loading-overlay" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">正在跳转...</div>
+      </div>
+
+      <div class="status-bar">
+        <span class="time" id="statusTime">19:05</span>
+        <span class="icons">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 11.5h1.8V14H1.5zM4.6 9h1.8v5H4.6zM7.7 6.5h1.8V14H7.7zM10.8 4h1.8v10h-1.8z"/></svg>
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.4C5.4 3.4 3.1 4.6 1.5 6.5l1.2 1.2C4 6 5.9 5 8 5s4 1 5.3 2.7l1.2-1.2C12.9 4.6 10.6 3.4 8 3.4zM8 7.4c-1.5 0-2.8.6-3.8 1.7l1.2 1.2c.7-.7 1.6-1.1 2.6-1.1s1.9.4 2.6 1.1l1.2-1.2C10.8 8 9.5 7.4 8 7.4zM8 11.4c-.6 0-1.1.2-1.5.7L8 13.5l1.5-1.5c-.4-.4-.9-.6-1.5-.6z"/></svg>
+          <svg viewBox="0 0 24 16" fill="currentColor"><rect x="0.5" y="0.5" width="20" height="11" rx="2" stroke="currentColor" fill="none" stroke-width="1"/><rect x="22" y="3.5" width="2" height="5" rx="1"/><rect x="2" y="2" width="14" height="8" rx="1" fill="var(--success)"/></svg>
+        </span>
+      </div>
+
+      <!-- s0: 等待 -->
+      <div id="s0" class="screen active">
+        <div class="wait-body">
+          <div class="wait-icon">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="18" r="1" fill="currentColor"/><path d="M9 5h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="wait-title">等待店员下单</div>
+          <div class="wait-desc">店员在左侧PC端选择商品并提交订单后，<br>客户扫码即可进入微企付收银台完成支付。</div>
+        </div>
+      </div>
+
+      <!-- s1: 微企付收银台 -->
+      <div id="s1" class="screen">
+        <div class="nav-bar">
+          <div class="nav-title" style="text-align:center;">收银台</div>
+        </div>
+        <div class="screen-body">
+          <div class="cashier-header">
+            <div class="cashier-meta"><span>商户　侠客汇数码交易平台</span></div>
+            <div class="cashier-title-text" id="c1Desc">3C数码交易</div>
+            <div class="cashier-amount"><span class="c-yen">¥</span> <span id="c1Amount">0.00</span></div>
+          </div>
+          <div class="cashier-divider"></div>
+          <div class="pay-section">
+            <div class="pay-label">支付方式</div>
+            <div class="pay-actual">实付金额 <strong id="c1Actual">0.00</strong> 元</div>
+            <div class="pay-options">
+              <button class="pay-opt selected" id="optWqf" onclick="selectPay('wqf')">
+                <div class="po-icon" style="background:none;padding:0;">
+                  <img src="wqf-avatar.png" style="width:36px;height:36px;border-radius:8px;">
+                </div>
+                <div class="po-text">
+                  <div class="po-name">腾讯微企付</div>
+                  <div class="po-tag">支持个人卡支付</div>
+                </div>
+              </button>
+            </div>
+          </div>
+          <div class="cashier-countdown">请在 <span class="ct-time" id="xhsCountdown">29:59</span> 内完成支付</div>
+          <button class="cashier-btn" onclick="confirmPay()">确认支付</button>
+          <div class="cashier-footer">
+            <img src="wqf-avatar.png" style="width:14px;height:14px;border-radius:3px;">
+            <span>客户侧收银台</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- s2: 微企付二维码（手机端视角，扫码后中间态） -->
+      <div id="s2" class="screen">
+        <div class="nav-bar">
+          <button class="back-btn" onclick="goScreen(1)"><svg viewBox="0 0 20 20" fill="none"><path d="M12.5 15.5L7 10l5.5-5.5" stroke="var(--text-1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="nav-title"><img src="wqf-avatar.png" style="width:20px;height:20px;border-radius:4px;vertical-align:-3px;margin-right:4px;">微企付收银台</div>
+        </div>
+        <div class="app-cashier">
+          <div class="app-card fade-up">
+            <div class="app-merchant-row">
+              <div class="app-merchant-logo">侠</div>
+              <div>
+                <div class="app-merchant-name">侠客汇数码交易平台</div>
+                <div class="app-merchant-desc" id="c2Desc">3C数码交易</div>
+              </div>
+            </div>
+            <div class="app-amount-area">
+              <div class="app-amount-label">支付金额</div>
+              <div class="app-amount-num"><span class="app-yen">¥</span><span id="c2Amount">0.00</span></div>
+            </div>
+          </div>
+          <div class="app-pay-method fade-up" style="animation-delay:0.08s;">
+            <div class="app-method-item" onclick="selectBankCard('icbc')">
+              <div class="app-method-icon icbc">
+                <svg viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="12" rx="2" stroke="#C45500" stroke-width="1.4"/><path d="M3 9h16" stroke="#C45500" stroke-width="1.4"/><path d="M7 13h3" stroke="#C45500" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </div>
+              <div class="app-method-info">
+                <div class="app-method-name">工商银行储蓄卡</div>
+                <div class="app-method-desc">尾号 6688 · 免绑卡直接支付</div>
+              </div>
+              <div class="app-method-radio checked" id="radioIcbc"></div>
+            </div>
+            <div class="app-method-item" onclick="selectBankCard('ccb')">
+              <div class="app-method-icon ccb">
+                <svg viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="12" rx="2" stroke="#0052D9" stroke-width="1.4"/><path d="M3 9h16" stroke="#0052D9" stroke-width="1.4"/><path d="M7 13h3" stroke="#0052D9" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </div>
+              <div class="app-method-info">
+                <div class="app-method-name">建设银行储蓄卡</div>
+                <div class="app-method-desc">尾号 3355 · 免绑卡直接支付</div>
+              </div>
+              <div class="app-method-radio" id="radioCcb"></div>
+            </div>
+          </div>
+          <button class="app-confirm-btn fade-up" style="animation-delay:0.15s;" onclick="goToBankApp()">确认付款</button>
+          <div class="app-secure">
+            <img src="wqf-avatar.png" style="width:16px;height:16px;border-radius:3px;">
+            腾讯微企付安全支付
+          </div>
+        </div>
+      </div>
+
+      <!-- s3: 银行APP -->
+      <div id="s3" class="screen">
+        <div class="nav-bar" style="background:#D4000E;">
+          <button class="back-btn" onclick="goScreen(2)" style="background:rgba(255,255,255,0.15);"><svg viewBox="0 0 20 20" fill="none"><path d="M12.5 15.5L7 10l5.5-5.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="nav-title" style="color:#fff;" id="bankTitle">工商银行</div>
+        </div>
+        <div class="bank-app">
+          <div class="bank-app-card fade-up">
+            <div class="bank-payee-label">收款方</div>
+            <div class="bank-payee-name">侠客汇数码交易平台</div>
+            <div class="bank-app-amount"><span class="bank-yen">¥</span><span id="c3Amount">0.00</span></div>
+          </div>
+          <div class="bank-detail-card fade-up" style="animation-delay:0.08s;">
+            <div class="bank-d-row"><span class="bank-d-label">付款账户</span><span class="bank-d-value" id="c3PayAcc">工商银行 **** 6688</span></div>
+            <div class="bank-d-row"><span class="bank-d-label">收款账户</span><span class="bank-d-value">微企付 **** 1888</span></div>
+            <div class="bank-d-row"><span class="bank-d-label">交易类型</span><span class="bank-d-value">扫码转账</span></div>
+            <div class="bank-d-row"><span class="bank-d-label">备注</span><span class="bank-d-value" id="c3OrderNo" style="font-family:var(--mono);font-size:12px;">-</span></div>
+          </div>
+          <button class="bank-pay-btn fade-up" style="animation-delay:0.15s;" onclick="bankConfirm()">确认付款</button>
+          <div class="bank-pwd-hint">点击后将验证支付密码</div>
+          <div class="app-secure" style="margin-top:auto;">
+            <svg viewBox="0 0 14 14" fill="none"><path d="M7 1.17L2.33 3.5v3.15C2.33 9.72 4.3 12.49 7 13.13c2.7-.64 4.67-3.41 4.67-6.48V3.5L7 1.17z" fill="#D4000E"/><path d="M5.5 7l1.2 1.2L9 5.8" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="bankSecLabel">中国工商银行安全支付</span>
+          </div>
+        </div>
+        <div class="pwd-modal" id="bankPwdModal">
+          <div class="pwd-sheet" style="border-top:3px solid #D4000E;">
+            <div class="pwd-sheet-title">请输入支付密码</div>
+            <div class="pwd-sheet-amount" id="c3PwdAmount">¥ 0.00</div>
+            <div class="pwd-dots" id="bankPwdDots">
+              <div class="pwd-dot"></div><div class="pwd-dot"></div><div class="pwd-dot"></div>
+              <div class="pwd-dot"></div><div class="pwd-dot"></div><div class="pwd-dot"></div>
+            </div>
+            <div style="text-align:center;font-size:12px;color:var(--text-3);">正在自动输入密码...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- s4: 支付成功 -->
+      <div id="s4" class="screen">
+        <div class="nav-bar"><div class="nav-title" style="text-align:center;">支付结果</div></div>
+        <div class="success-body">
+          <div class="success-icon">
+            <svg viewBox="0 0 36 36" fill="none"><path d="M10 18l6 6 10-12" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="success-title">支付成功</div>
+          <div class="success-amount"><span class="s-yen">¥</span><span id="c4Amount">0.00</span></div>
+          <div class="success-merchant">侠客汇数码交易平台</div>
+          <div class="success-detail-card">
+            <div class="sd-row"><span class="sdl">支付方式</span><span class="sdv">微企付 · 银行卡支付</span></div>
+            <div class="sd-row"><span class="sdl">付款银行</span><span class="sdv" id="c4Bank">工商银行 (6688)</span></div>
+            <div class="sd-row"><span class="sdl">订单编号</span><span class="sdv" id="c4OrderNo" style="font-family:var(--mono);font-size:12px;">-</span></div>
+            <div class="sd-row"><span class="sdl">交易时间</span><span class="sdv" id="c4Time">-</span></div>
+          </div>
+          <button class="success-done-btn" onclick="resetAll()">返回重新体验</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QR 弹层 -->
+<div class="qr-overlay" id="qrOverlay">
+  <button class="qr-overlay-close" onclick="hideQROverlay()">✕</button>
+  <div class="qr-overlay-card">
+    <div class="qr-overlay-merchant">
+      <div class="qr-ml">侠</div>
+      <div><div class="qr-mn">侠客汇数码</div><div class="qr-ms">3C数码交易平台</div></div>
+    </div>
+    <div class="qr-overlay-amount"><span class="yen">¥</span> <span id="qrOvAmount">0.00</span></div>
+    <div class="qr-overlay-orderno" id="qrOvOrderNo">订单号: -</div>
+    <div class="qr-overlay-canvas-wrap" onclick="simulateScan()">
+      <canvas id="qrOvCanvas" width="400" height="400" style="width:180px;height:180px;border-radius:8px;border:1px solid var(--border);"></canvas>
+      <div class="hint">点击二维码模拟扫码</div>
+    </div>
+    <button onclick="simulateScan()" style="margin:12px 0 4px;padding:10px 32px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.15s;display:flex;align-items:center;gap:6px;justify-content:center;">
+      <svg viewBox="0 0 16 16" fill="none" style="width:16px;height:16px;"><path d="M4 2H2v4h2V2zm0 8H2v4h2v-4zm8-8h-2v4h2V2zm0 8h-2v4h2v-4zM6 2h4v2H6V2zm0 10h4v2H6v-2z" fill="currentColor"/></svg>
+      点击这里，模拟客户扫码支付
+    </button>
+    <div class="qr-overlay-expire">有效期 <span class="t" id="qrOvTimer">05:00</span></div>
+    <div class="qr-overlay-powered">由 <img src="wqf-avatar.png" style="width:16px;height:16px;border-radius:3px;vertical-align:-2px;"> <span class="wtag" style="background:var(--brand);">微企付</span> 提供安全支付能力</div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ==================== 商品数据 ====================
+const PRODUCTS = {
+  laptop: [
+    { name: 'MacBook Pro 14 M3', spec: 'Apple / 14英寸 / 18GB / 512GB', condition: '九五新', price: 12800 },
+    { name: 'ThinkPad X1 Carbon Gen11', spec: 'Lenovo / 14英寸 / 16GB / 512GB', condition: '九成新', price: 6500 },
+    { name: 'MateBook X Pro', spec: 'HUAWEI / 14.2英寸 / 16GB / 1TB', condition: '全新', price: 9200 },
+    { name: 'Dell XPS 15', spec: 'Dell / 15.6英寸 / 32GB / 1TB', condition: '八成新', price: 7800 },
+    { name: 'Surface Laptop 5', spec: 'Microsoft / 13.5英寸 / 16GB / 512GB', condition: '九成新', price: 5600 },
+  ],
+  phone: [
+    { name: 'iPhone 15 Pro Max', spec: 'Apple / 256GB / 原色钛金属', condition: '九五新', price: 7200 },
+    { name: 'Mate 60 Pro', spec: 'HUAWEI / 512GB / 雅丹黑', condition: '全新', price: 6800 },
+    { name: 'Xiaomi 14 Ultra', spec: 'Xiaomi / 16GB+512GB / 黑色', condition: '九成新', price: 4200 },
+    { name: 'Galaxy S24 Ultra', spec: 'Samsung / 256GB / 钛灰', condition: '八成新', price: 5500 },
+    { name: 'OPPO Find X7 Ultra', spec: 'OPPO / 16GB+512GB / 海阔天空', condition: '九五新', price: 4800 },
+  ],
+  tablet: [
+    { name: 'iPad Pro 12.9 M2', spec: 'Apple / 256GB / WiFi / 深空灰', condition: '九五新', price: 6800 },
+    { name: 'MatePad Pro 13.2', spec: 'HUAWEI / 12GB+256GB / 曜金黑', condition: '全新', price: 5200 },
+    { name: 'iPad Air M2', spec: 'Apple / 128GB / WiFi / 星光色', condition: '九成新', price: 3800 },
+    { name: 'Xiaomi Pad 6S Pro', spec: 'Xiaomi / 8GB+256GB / 黑色', condition: '八成新', price: 2600 },
+    { name: 'Galaxy Tab S9+', spec: 'Samsung / 256GB / WiFi / 石墨灰', condition: '九成新', price: 4500 },
+  ],
+};
+
+const CAT_LABELS = { laptop: '笔记本电脑', phone: '手机', tablet: '平板电脑' };
+const CAT_ICONS = {
+  laptop: '<svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M1 13h14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  phone: '<svg viewBox="0 0 16 16" fill="none"><rect x="4" y="1" width="8" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="12.5" r="0.8" fill="currentColor"/><path d="M6.5 3h3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>',
+  tablet: '<svg viewBox="0 0 16 16" fill="none"><rect x="2" y="1.5" width="12" height="13" rx="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="12" r="0.8" fill="currentColor"/></svg>',
+};
+
+// ==================== 状态 ====================
+let currentCat = 'laptop';
+let selectedItems = new Set(); // 索引 "cat-index"
+let orderNo = '';
+let selectedBank = 'icbc';
+const bankMap = {
+  icbc: { name: '工商银行', tail: '6688', title: '工商银行', color: '#D4000E' },
+  ccb: { name: '建设银行', tail: '3355', title: '建设银行', color: '#0052D9' },
+};
+
+// ==================== 初始化 ====================
+function init() {
+  // 时间
+  const now = new Date();
+  document.getElementById('statusTime').textContent =
+    String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+
+  // 分类 tabs
+  const tabsEl = document.getElementById('catTabs');
+  tabsEl.innerHTML = '';
+  Object.keys(PRODUCTS).forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-tab' + (cat === currentCat ? ' active' : '');
+    btn.innerHTML = CAT_ICONS[cat] + CAT_LABELS[cat];
+    btn.onclick = () => switchCat(cat);
+    tabsEl.appendChild(btn);
+  });
+
+  renderProducts();
+  // 倒计时
+  startCountdown();
+}
+
+function switchCat(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-tab').forEach((t, i) => {
+    t.classList.toggle('active', Object.keys(PRODUCTS)[i] === cat);
+  });
+  renderProducts();
+}
+
+function renderProducts() {
+  const list = document.getElementById('productList');
+  const items = PRODUCTS[currentCat];
+  list.innerHTML = items.map((p, i) => {
+    const key = currentCat + '-' + i;
+    const sel = selectedItems.has(key);
+    return `<div class="prod-item${sel ? ' selected' : ''}" onclick="toggleProduct('${key}')">
+      <div class="prod-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="prod-info"><div class="prod-name">${p.name}</div><div class="prod-spec">${p.spec}</div></div>
+      <div class="prod-condition">${p.condition}</div>
+      <div class="prod-price"><span class="yen">¥</span>${p.price.toLocaleString()}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleProduct(key) {
+  if (selectedItems.has(key)) selectedItems.delete(key);
+  else selectedItems.add(key);
+  renderProducts();
+  updateCart();
+}
+
+function updateCart() {
+  const summary = document.getElementById('cartSummary');
+  if (selectedItems.size === 0) {
+    summary.innerHTML = '<div class="cart-empty">请在上方选择商品</div>';
+    document.getElementById('submitBtn').disabled = true;
+    updateStaffStep(0);
+    return;
+  }
+
+  let total = 0;
+  let rows = '';
+  selectedItems.forEach(key => {
+    const [cat, idx] = key.split('-');
+    const p = PRODUCTS[cat][+idx];
+    total += p.price;
+    rows += `<div class="cart-row"><span class="cl">${p.name} · ${p.condition}</span><span class="cv">¥${p.price.toLocaleString()}</span></div>`;
+  });
+
+  summary.innerHTML = rows + `<div class="cart-row total"><span class="cl">合计（${selectedItems.size}件）</span><span class="cv"><span class="yen">¥</span>${total.toLocaleString('zh-CN', {minimumFractionDigits:2})}</span></div>`;
+  document.getElementById('submitBtn').disabled = false;
+  updateStaffStep(1);
+}
+
+function getTotal() {
+  let total = 0;
+  selectedItems.forEach(key => {
+    const [cat, idx] = key.split('-');
+    total += PRODUCTS[cat][+idx].price;
+  });
+  return total;
+}
+
+function getOrderDesc() {
+  const items = [];
+  selectedItems.forEach(key => {
+    const [cat, idx] = key.split('-');
+    items.push(PRODUCTS[cat][+idx].name);
+  });
+  return items.join('、');
+}
+
+// ==================== 步骤条 ====================
+function updateStaffStep(n) {
+  document.querySelectorAll('#staffSteps .sstep').forEach((el, i) => {
+    el.classList.remove('active', 'done');
+    if (i < n) el.classList.add('done');
+    else if (i === n) el.classList.add('active');
+  });
+}
+
+// ==================== 提交订单 ====================
+function submitOrder() {
+  if (document.getElementById('submitBtn').disabled) return;
+  orderNo = 'XKH' + Date.now().toString().slice(-10);
+  const total = getTotal();
+  const fmtTotal = total.toLocaleString('zh-CN', {minimumFractionDigits:2});
+
+  // 填充已下单详情
+  let detailRows = '';
+  selectedItems.forEach(key => {
+    const [cat, idx] = key.split('-');
+    const p = PRODUCTS[cat][+idx];
+    detailRows += `<div class="done-row"><span class="dl">${CAT_LABELS[cat]}</span><span class="dv">${p.name} · ${p.condition}</span></div>`;
+  });
+  detailRows += `<div class="done-row"><span class="dl">订单编号</span><span class="dv mono">${orderNo}</span></div>`;
+  detailRows += `<div class="done-row"><span class="dl">合计金额</span><span class="dv price">¥ ${fmtTotal}</span></div>`;
+  document.getElementById('doneDetail').innerHTML = detailRows;
+
+  // 切状态
+  document.getElementById('staffBody').dataset.state = 'ordered';
+  updateStaffStep(2);
+
+  // 弹QR
+  setTimeout(() => showQROverlay(), 300);
+}
+
+// ==================== QR弹层 ====================
+function showQROverlay() {
+  const total = getTotal();
+  const fmt = total.toLocaleString('zh-CN', {minimumFractionDigits:2});
+  document.getElementById('qrOvAmount').textContent = fmt;
+  document.getElementById('qrOvOrderNo').textContent = '订单号: ' + orderNo;
+  generateQR();
+  startQRTimer();
+  document.getElementById('qrOverlay').classList.add('show');
+}
+
+function hideQROverlay() {
+  document.getElementById('qrOverlay').classList.remove('show');
+  clearInterval(window._qrT);
+}
+
+function generateQR() {
+  const canvas = document.getElementById('qrOvCanvas');
+  const ctx = canvas.getContext('2d');
+  const size = 400, modules = 33, cell = size / modules;
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = '#1D2129';
+  function seeded(s) { let x = Math.sin(s) * 10000; return x - Math.floor(x); }
+  function finder(ox, oy) {
+    for (let r = 0; r < 7; r++) for (let c = 0; c < 7; c++)
+      if (r===0||r===6||c===0||c===6||(r>=2&&r<=4&&c>=2&&c<=4))
+        ctx.fillRect((ox+c)*cell,(oy+r)*cell,cell,cell);
+  }
+  finder(0,0); finder(modules-7,0); finder(0,modules-7);
+  for (let i = 8; i < modules-8; i++) if(i%2===0) {
+    ctx.fillRect(i*cell,6*cell,cell,cell);
+    ctx.fillRect(6*cell,i*cell,cell,cell);
+  }
+  const seed = orderNo.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  for (let r = 0; r < modules; r++) for (let c = 0; c < modules; c++) {
+    if ((r<9&&c<9)||(r<9&&c>modules-9)||(r>modules-9&&c<9)) continue;
+    if (r===6||c===6) continue;
+    if (Math.abs(r-modules/2)<4&&Math.abs(c-modules/2)<4) continue;
+    if (seeded(r*modules+c+seed)>0.5) ctx.fillRect(c*cell,r*cell,cell,cell);
+  }
+}
+
+function startQRTimer() {
+  let sec = 300;
+  clearInterval(window._qrT);
+  function upd() {
+    const m = String(Math.floor(sec/60)).padStart(2,'0');
+    const s = String(sec%60).padStart(2,'0');
+    document.getElementById('qrOvTimer').textContent = m+':'+s;
+    if (sec <= 0) clearInterval(window._qrT);
+    sec--;
+  }
+  upd();
+  window._qrT = setInterval(upd, 1000);
+}
+
+// ==================== 模拟扫码 ====================
+function simulateScan() {
+  hideQROverlay();
+  updateStaffStep(3);
+  const total = getTotal();
+  const fmt = total.toLocaleString('zh-CN', {minimumFractionDigits:2});
+  const desc = getOrderDesc();
+
+  // 填充手机端数据
+  document.getElementById('c1Amount').textContent = fmt;
+  document.getElementById('c1Actual').textContent = fmt;
+  document.getElementById('c1Desc').textContent = desc;
+  document.getElementById('c2Amount').textContent = fmt;
+  document.getElementById('c2Desc').textContent = desc;
+
+  showLoading('正在打开微企付收银台…', () => goScreen(1), 1200);
+}
+
+// ==================== 手机端导航 ====================
+function goScreen(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+}
+
+function showLoading(text, cb, delay) {
+  const ov = document.getElementById('loading');
+  document.getElementById('loadingText').textContent = text;
+  ov.classList.add('show');
+  setTimeout(() => { ov.classList.remove('show'); if(cb) cb(); }, delay || 1200);
+}
+
+// ==================== 收银台操作 ====================
+function selectPay(mode) { /* 单一微企付模式 */ }
+
+function confirmPay() {
+  showLoading('正在跳转微企付…', () => goScreen(2), 800);
+}
+
+// ==================== 微企付APP ====================
+function selectBankCard(bank) {
+  selectedBank = bank;
+  document.getElementById('radioIcbc').classList.toggle('checked', bank === 'icbc');
+  document.getElementById('radioCcb').classList.toggle('checked', bank === 'ccb');
+}
+
+function goToBankApp() {
+  const bank = bankMap[selectedBank];
+  const total = getTotal();
+  const fmt = total.toLocaleString('zh-CN', {minimumFractionDigits:2});
+  showLoading('正在跳转' + bank.title + '…', () => {
+    document.getElementById('bankTitle').textContent = bank.title;
+    document.getElementById('c3Amount').textContent = fmt;
+    document.getElementById('c3PayAcc').textContent = bank.name + ' **** ' + bank.tail;
+    document.getElementById('c3OrderNo').textContent = orderNo;
+    document.getElementById('c3PwdAmount').textContent = '¥ ' + fmt;
+    document.getElementById('bankSecLabel').textContent = '中国' + bank.title + '安全支付';
+    goScreen(3);
+  }, 1200);
+}
+
+// ==================== 银行APP确认 ====================
+function bankConfirm() {
+  const modal = document.getElementById('bankPwdModal');
+  modal.classList.add('show');
+  const dots = document.querySelectorAll('#bankPwdDots .pwd-dot');
+  dots.forEach(d => d.classList.remove('filled'));
+  dots.forEach((d, i) => setTimeout(() => d.classList.add('filled'), 400 + i * 300));
+  setTimeout(() => {
+    modal.classList.remove('show');
+    showLoading('正在验证支付密码…', () => showSuccess(), 1000);
+  }, 400 + 6 * 300 + 500);
+}
+
+// ==================== 支付成功 ====================
+function showSuccess() {
+  const total = getTotal();
+  const fmt = total.toLocaleString('zh-CN', {minimumFractionDigits:2});
+  const bank = bankMap[selectedBank];
+  const now = new Date();
+  const timeStr = now.getFullYear() + '-' +
+    String(now.getMonth()+1).padStart(2,'0') + '-' +
+    String(now.getDate()).padStart(2,'0') + ' ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0') + ':' +
+    String(now.getSeconds()).padStart(2,'0');
+
+  document.getElementById('c4Amount').textContent = fmt;
+  document.getElementById('c4Bank').textContent = bank.name + ' (' + bank.tail + ')';
+  document.getElementById('c4OrderNo').textContent = orderNo;
+  document.getElementById('c4Time').textContent = timeStr;
+  goScreen(4);
+
+  // 同步更新左侧订单状态
+  syncStaffPaid(timeStr);
+}
+
+function syncStaffPaid(timeStr) {
+  // 卡片样式切换
+  const card = document.getElementById('doneCard');
+  card.classList.add('paid');
+  document.getElementById('doneTitle').textContent = '订单支付成功';
+  document.getElementById('doneDesc').innerHTML = '客户已通过微企付完成支付<br>交易时间：' + timeStr;
+
+  // "再次展示付款码"置灰
+  const btnQr = document.getElementById('btnQr');
+  btnQr.classList.add('disabled');
+  btnQr.textContent = '付款码已失效';
+}
+
+// ==================== 重置 ====================
+function resetAll() {
+  selectedItems.clear();
+  orderNo = '';
+  selectedBank = 'icbc';
+  document.getElementById('staffBody').dataset.state = 'form';
+  updateStaffStep(0);
+  renderProducts();
+  updateCart();
+  goScreen(0);
+  hideQROverlay();
+  selectBankCard('icbc');
+
+  // 重置左侧订单卡片
+  const card = document.getElementById('doneCard');
+  card.classList.remove('paid');
+  document.getElementById('doneTitle').textContent = '订单已创建';
+  document.getElementById('doneDesc').innerHTML = '请引导客户使用微信扫描二维码<br>完成微企付支付';
+  const btnQr = document.getElementById('btnQr');
+  btnQr.classList.remove('disabled');
+  btnQr.textContent = '再次展示付款码';
+}
+
+// ==================== 倒计时 ====================
+let mainSec = 30 * 60 - 1;
+function startCountdown() {
+  setInterval(() => {
+    if (mainSec > 0) {
+      mainSec--;
+      const m = String(Math.floor(mainSec/60)).padStart(2,'0');
+      const s = String(mainSec%60).padStart(2,'0');
+      const el = document.getElementById('xhsCountdown');
+      if (el) el.textContent = m + ':' + s;
+    }
+  }, 1000);
+}
+
+// ==================== Toast ====================
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+}
+
+// Go
+init();
+</script>
+</body>
+</html>
