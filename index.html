@@ -36,7 +36,7 @@
   --radius-sm: 8px;
   --shadow: 0 2px 12px rgba(0,0,0,0.06);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
-  --font: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
   --mono: "SF Mono", "JetBrains Mono", "Fira Code", monospace;
 }
 
@@ -47,6 +47,7 @@ body {
   color: var(--text-1);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* ==================== 双栏布局 ==================== */
@@ -402,6 +403,7 @@ body {
   position: sticky;
   top: 0;
   height: 100vh;
+  min-width: 0;
 }
 
 .side-label {
@@ -413,7 +415,8 @@ body {
 
 /* 手机壳 */
 .phone-frame {
-  width: 375px; height: 720px;
+  width: min(100%, 375px);
+  height: min(720px, calc(100vh - 48px));
   background: var(--white);
   border-radius: 40px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.06);
@@ -846,15 +849,610 @@ body {
 }
 .toast.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
 
-/* ==================== 响应式 ==================== */
-@media (max-width: 960px) {
-  .demo-layout { grid-template-columns: 1fr; max-width: 100%; }
-  .customer-side { padding: 20px 12px; }
+/* ==================== 2026-05-09 调整：纸质单 + 限定付款人 + 地理位置弹窗 ==================== */
+.wechat-cashier-screen {
+  padding: 16px 0 0;
+  background: #ECECEC;
 }
+
+.wechat-brand {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-1);
+  margin-top: 10px;
+}
+
+.wechat-brand-sub {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 8px;
+}
+
+.wx-amount {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.wx-amount .wx-yen {
+  font-size: 22px;
+  vertical-align: 4px;
+  margin-right: 2px;
+}
+
+.payer-card {
+  margin: 18px 16px 0;
+  padding: 0 18px;
+  height: 64px;
+  border-radius: 14px;
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+}
+
+.payer-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.payer-label {
+  font-size: 15px;
+  color: var(--text-2);
+}
+
+.payer-name {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.limit-badge {
+  font-size: 13px;
+  font-weight: 600;
+  color: #F5A623;
+}
+
+.payer-side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.payer-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #FF4D4F;
+  box-shadow: 0 0 0 3px rgba(255,77,79,0.10);
+}
+
+.payer-chevron {
+  width: 9px;
+  height: 9px;
+  border-top: 1.5px solid #B8B8B8;
+  border-right: 1.5px solid #B8B8B8;
+  transform: rotate(45deg);
+}
+
+.pay-block-head {
+  margin: 16px 20px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.pay-block-head .link {
+  color: #7E8AA6;
+  font-weight: 500;
+}
+
+.pay-method-panel {
+  margin: 0 16px;
+  border-radius: 14px;
+  background: var(--white);
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+}
+
+.pay-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  cursor: pointer;
+}
+
+.pay-row + .pay-row {
+  border-top: 0.5px solid var(--border);
+}
+
+.pay-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.pay-logo-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pay-logo-box svg {
+  width: 24px;
+  height: 24px;
+}
+
+.pay-logo-box.wechat {
+  background: #07C160;
+}
+
+.pay-logo-box.bank-card {
+  background: #2DA8F8;
+}
+
+.pay-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.pay-subtitle {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 3px;
+}
+
+.pay-radio {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid #D2D5DA;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.pay-radio.checked {
+  border-color: var(--success);
+  background: var(--success);
+}
+
+.pay-radio.checked::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 12px;
+  height: 6px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+
+.bank-group-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 10px;
+  color: var(--text-1);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.bank-group-title::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #2DA8F8;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.24);
+}
+
+.bank-list {
+  padding: 0 10px 6px;
+}
+
+.bank-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 6px;
+  cursor: pointer;
+}
+
+.bank-option + .bank-option {
+  border-top: 0.5px solid var(--border);
+}
+
+.bank-option-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.bank-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.bank-badge.cmb { background: #E53935; }
+.bank-badge.icbc { background: #D4000E; }
+.bank-badge.boc { background: #C62828; }
+.bank-badge.ccb { background: #0B57D0; }
+
+.bank-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+.bank-tail {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.wechat-cashier-screen .bank-tail {
+  display: none;
+}
+
+.show-more-bank {
+  text-align: center;
+  padding: 14px 0 18px;
+  color: #6C7898;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.geo-notice {
+  margin: 16px 20px 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #7D858F;
+  text-align: center;
+}
+
+.bottom-pay-area {
+  margin-top: auto;
+  padding: 30px 16px 34px;
+}
+
+.cashier-pay-btn {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: 12px;
+  background: #15C15D;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+.cashier-pay-btn:hover {
+  background: #12B356;
+}
+
+.paper-ticket-preview {
+  margin: 18px 0 16px;
+  border: 1px solid #ECEDEF;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 100%);
+  padding: 14px;
+  text-align: left;
+}
+
+.ticket-preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.ticket-preview-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.ticket-preview-tag {
+  font-size: 11px;
+  color: #6B7280;
+  background: #F2F4F7;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.ticket-preview-body {
+  display: grid;
+  grid-template-columns: 1fr 82px;
+  gap: 12px;
+  align-items: center;
+}
+
+.ticket-preview-lines {
+  display: grid;
+  gap: 6px;
+}
+
+.ticket-line {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.ticket-line strong {
+  color: var(--text-1);
+}
+
+.ticket-qr-mini {
+  width: 82px;
+  height: 82px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(90deg, #111 10px, transparent 10px) 0 0/20px 20px,
+    linear-gradient(#111 10px, transparent 10px) 0 0/20px 20px,
+    linear-gradient(90deg, transparent 10px, #111 10px) 10px 10px/20px 20px,
+    linear-gradient(transparent 10px, #111 10px) 10px 10px/20px 20px,
+    #fff;
+}
+
+.ticket-tip {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #5D6470;
+}
+
+.geo-modal {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.30);
+  z-index: 58;
+}
+
+.geo-modal.show {
+  display: flex;
+}
+
+.geo-card {
+  width: calc(100% - 40px);
+  max-width: 316px;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+}
+
+.geo-card-body {
+  padding: 24px 22px 18px;
+  text-align: center;
+}
+
+.geo-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  margin: 0 auto 14px;
+  background: rgba(7,193,96,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.geo-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--success);
+}
+
+.geo-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.geo-desc {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-2);
+}
+
+.geo-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 0.5px solid var(--border);
+}
+
+.geo-action-btn {
+  height: 50px;
+  border: none;
+  background: #fff;
+  font-size: 16px;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+.geo-action-btn + .geo-action-btn {
+  border-left: 0.5px solid var(--border);
+}
+
+.geo-action-btn.primary {
+  color: #07C160;
+  font-weight: 600;
+}
+
+.geo-action-btn.secondary {
+  color: var(--text-2);
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 1100px) {
+  .demo-layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .customer-side {
+    order: -1;
+    position: static;
+    top: auto;
+    height: auto;
+    padding: 20px 16px 24px;
+  }
+  .side-label {
+    align-self: flex-start;
+  }
+  .phone-frame {
+    width: min(100%, 420px);
+    height: min(760px, calc(100dvh - 88px));
+  }
+}
+
+@media (max-width: 768px) {
+  .staff-topbar {
+    padding: 14px 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .topbar-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .staff-steps {
+    padding: 12px 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .staff-steps::-webkit-scrollbar {
+    display: none;
+  }
+  .staff-body {
+    padding: 18px 16px 20px;
+  }
+  .prod-item {
+    grid-template-columns: 20px minmax(0, 1fr) auto;
+    align-items: flex-start;
+  }
+  .prod-info,
+  .prod-name,
+  .prod-spec {
+    white-space: normal;
+  }
+  .prod-condition {
+    grid-column: 2 / 3;
+    justify-self: flex-start;
+    margin-top: 4px;
+  }
+  .prod-price {
+    grid-column: 3 / 4;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+  .done-actions {
+    flex-direction: column;
+  }
+  .btn-qr,
+  .btn-reset {
+    width: 100%;
+  }
+  .qr-overlay {
+    padding: 20px 14px;
+  }
+  .qr-overlay-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 28px 18px 24px;
+  }
+  .ticket-preview-body {
+    grid-template-columns: 1fr 72px;
+  }
+}
+
 @media (max-width: 480px) {
-  .phone-frame { width: 100%; height: 600px; border-radius: 0; box-shadow: none; }
-  .cat-tabs { flex-wrap: wrap; }
-  .staff-body { padding: 16px; }
+  body {
+    background: #FFFFFF;
+  }
+  .customer-side {
+    padding: 0;
+    background: #FFFFFF;
+  }
+  .side-label {
+    width: 100%;
+    padding: 12px 16px 0;
+    margin-bottom: 8px;
+  }
+  .phone-frame {
+    width: 100%;
+    height: calc(100dvh - 44px);
+    min-height: 640px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .cat-tabs {
+    flex-wrap: wrap;
+  }
+  .cat-tab {
+    flex: 1 1 calc(50% - 4px);
+    justify-content: center;
+  }
+  .prod-item {
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 10px 12px;
+  }
+  .prod-price {
+    grid-column: 2 / 3;
+    grid-row: auto;
+    text-align: left;
+  }
+  .prod-condition {
+    grid-column: 2 / 3;
+  }
+  .payer-card,
+  .pay-method-panel,
+  .bottom-pay-area {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+  .pay-block-head,
+  .geo-notice {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  .geo-card {
+    width: calc(100% - 24px);
+  }
 }
 </style>
 </head>
@@ -912,7 +1510,7 @@ body {
             <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div class="done-title" id="doneTitle">订单已创建</div>
-          <div class="done-desc" id="doneDesc">请引导客户使用微信扫描二维码<br>完成微企付支付</div>
+          <div class="done-desc" id="doneDesc">请先打印线下提货单，并引导客户扫描单据右下角二维码<br>进入微企付收银台完成支付</div>
         </div>
         <div class="done-detail" id="doneDetail"></div>
         <div class="done-actions">
@@ -925,11 +1523,27 @@ body {
 
   <!-- ====== 右栏：客户手机端 ====== -->
   <div class="customer-side">
-    <div class="side-label"><span class="dot"></span>客户手机端（微信扫码后）</div>
+    <div class="side-label"><span class="dot"></span>客户手机端（扫描纸质提货单二维码后）</div>
     <div class="phone-frame" id="phone">
       <div class="loading-overlay" id="loading">
         <div class="loading-spinner"></div>
         <div class="loading-text" id="loadingText">正在跳转...</div>
+      </div>
+
+      <div class="geo-modal" id="geoModal">
+        <div class="geo-card">
+          <div class="geo-card-body">
+            <div class="geo-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" fill="currentColor"/></svg>
+            </div>
+            <div class="geo-title">获取当前位置</div>
+            <div class="geo-desc">为核验客户在现场完成交易，付款前需获取一次地理位置。仅用于本次支付校验，不做其他用途。</div>
+          </div>
+          <div class="geo-actions">
+            <button class="geo-action-btn secondary" onclick="hideGeoModal()">取消</button>
+            <button class="geo-action-btn primary" onclick="allowGeoPermission()">允许获取</button>
+          </div>
+        </div>
       </div>
 
       <div class="status-bar">
@@ -948,100 +1562,109 @@ body {
             <svg viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="18" r="1" fill="currentColor"/><path d="M9 5h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
           <div class="wait-title">等待店员下单</div>
-          <div class="wait-desc">店员在左侧PC端选择商品并提交订单后，<br>客户扫码即可进入微企付收银台完成支付。</div>
+          <div class="wait-desc">店员在左侧PC端选择商品、打印提货单后，<br>客户扫描单据二维码即可进入微企付收银台完成支付。</div>
         </div>
       </div>
 
       <!-- s1: 微企付收银台 -->
       <div id="s1" class="screen">
         <div class="nav-bar">
-          <div class="nav-title" style="text-align:center;">收银台</div>
+          <button class="back-btn" onclick="goScreen(0)"><svg viewBox="0 0 20 20" fill="none"><path d="M12.5 15.5L7 10l5.5-5.5" stroke="var(--text-1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="nav-title" style="text-align:center;">微企付</div>
+          <div class="nav-right"></div>
         </div>
-        <div class="screen-body">
-          <div class="cashier-header">
-            <div class="cashier-meta"><span>商户　侠客汇数码交易平台</span></div>
-            <div class="cashier-title-text" id="c1Desc">3C数码交易</div>
-            <div class="cashier-amount"><span class="c-yen">¥</span> <span id="c1Amount">0.00</span></div>
-          </div>
-          <div class="cashier-divider"></div>
-          <div class="pay-section">
-            <div class="pay-label">支付方式</div>
-            <div class="pay-actual">实付金额 <strong id="c1Actual">0.00</strong> 元</div>
-            <div class="pay-options">
-              <button class="pay-opt selected" id="optWqf" onclick="selectPay('wqf')">
-                <div class="po-icon" style="background:none;padding:0;">
-                  <img src="wqf-avatar.png" style="width:36px;height:36px;border-radius:8px;">
-                </div>
-                <div class="po-text">
-                  <div class="po-name">腾讯微企付</div>
-                  <div class="po-tag">支持个人卡支付</div>
-                </div>
-              </button>
+        <div class="screen-body wechat-cashier-screen">
+          <div class="wechat-brand" id="c1Desc">侠客汇数码交易平台</div>
+          <div class="wechat-brand-sub">现场扫码交易</div>
+          <div class="wx-amount"><span class="wx-yen">¥</span><span id="c1Amount">0.00</span></div>
+
+          <div class="payer-card">
+            <div class="payer-main">
+              <span class="payer-label">付款户名</span>
+              <span class="payer-name">**博</span>
+              <span class="limit-badge">限定</span>
+            </div>
+            <div class="payer-side">
+              <span class="payer-dot"></span>
+              <span class="payer-chevron"></span>
             </div>
           </div>
-          <div class="cashier-countdown">请在 <span class="ct-time" id="xhsCountdown">29:59</span> 内完成支付</div>
-          <button class="cashier-btn" onclick="confirmPay()">确认支付</button>
-          <div class="cashier-footer">
-            <img src="wqf-avatar.png" style="width:14px;height:14px;border-radius:3px;">
-            <span>客户侧收银台</span>
+
+          <div class="pay-block-head">
+            <span>选择付款方式</span>
+            <span class="link">联系客服</span>
+          </div>
+
+          <div class="pay-method-panel">
+            <div class="pay-row">
+              <div class="pay-left">
+                <div class="pay-logo-box wechat">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M7.2 17.7c-3.1 0-5.7-2.2-5.7-5s2.6-5 5.7-5c1.6 0 3 .5 4 1.4 1.1-1.8 3.3-3.1 5.8-3.1 3.6 0 6.5 2.5 6.5 5.7 0 3.1-2.9 5.7-6.5 5.7-.7 0-1.4-.1-2-.3l-2.9 1.7.8-2.2c-.7-.4-1.4-.9-1.8-1.5-.8 1.6-2.6 2.6-4.9 2.6z" fill="#fff"/></svg>
+                </div>
+                <div>
+                  <div class="pay-title">微信支付｜经营账户</div>
+                </div>
+              </div>
+              <div class="pay-radio"></div>
+            </div>
+
+            <div class="bank-group-title">个人银行卡</div>
+            <div class="bank-list">
+              <div class="bank-option" onclick="selectBankCard('cmb')">
+                <div class="bank-option-left">
+                  <div class="bank-badge cmb">招</div>
+                  <div>
+                    <div class="bank-name">招商银行储蓄卡</div>
+                  </div>
+                </div>
+                <div class="pay-radio checked" id="radioCmb"></div>
+              </div>
+              <div class="bank-option" onclick="selectBankCard('icbc')">
+                <div class="bank-option-left">
+                  <div class="bank-badge icbc">工</div>
+                  <div>
+                    <div class="bank-name">工商银行储蓄卡</div>
+                  </div>
+                </div>
+                <div class="pay-radio" id="radioIcbc"></div>
+              </div>
+              <div class="bank-option" onclick="selectBankCard('boc')">
+                <div class="bank-option-left">
+                  <div class="bank-badge boc">中</div>
+                  <div>
+                    <div class="bank-name">中国银行储蓄卡</div>
+                  </div>
+                </div>
+                <div class="pay-radio" id="radioBoc"></div>
+              </div>
+              <div class="bank-option" onclick="selectBankCard('ccb')">
+                <div class="bank-option-left">
+                  <div class="bank-badge ccb">建</div>
+                  <div>
+                    <div class="bank-name">建设银行储蓄卡</div>
+                  </div>
+                </div>
+                <div class="pay-radio" id="radioCcb"></div>
+              </div>
+              <div class="show-more-bank">显示更多银行</div>
+            </div>
+          </div>
+
+          <div class="geo-notice">付款前会先获取当前位置，用于核验客户在现场发起支付。</div>
+
+          <div class="bottom-pay-area">
+            <button class="cashier-pay-btn" onclick="confirmPay()">付款</button>
           </div>
         </div>
       </div>
 
-      <!-- s2: 微企付二维码（手机端视角，扫码后中间态） -->
-      <div id="s2" class="screen">
-        <div class="nav-bar">
-          <button class="back-btn" onclick="goScreen(1)"><svg viewBox="0 0 20 20" fill="none"><path d="M12.5 15.5L7 10l5.5-5.5" stroke="var(--text-1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="nav-title"><img src="wqf-avatar.png" style="width:20px;height:20px;border-radius:4px;vertical-align:-3px;margin-right:4px;">微企付收银台</div>
-        </div>
-        <div class="app-cashier">
-          <div class="app-card fade-up">
-            <div class="app-merchant-row">
-              <div class="app-merchant-logo">侠</div>
-              <div>
-                <div class="app-merchant-name">侠客汇数码交易平台</div>
-                <div class="app-merchant-desc" id="c2Desc">3C数码交易</div>
-              </div>
-            </div>
-            <div class="app-amount-area">
-              <div class="app-amount-label">支付金额</div>
-              <div class="app-amount-num"><span class="app-yen">¥</span><span id="c2Amount">0.00</span></div>
-            </div>
-          </div>
-          <div class="app-pay-method fade-up" style="animation-delay:0.08s;">
-            <div class="app-method-item" onclick="selectBankCard('icbc')">
-              <div class="app-method-icon icbc">
-                <svg viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="12" rx="2" stroke="#C45500" stroke-width="1.4"/><path d="M3 9h16" stroke="#C45500" stroke-width="1.4"/><path d="M7 13h3" stroke="#C45500" stroke-width="1.4" stroke-linecap="round"/></svg>
-              </div>
-              <div class="app-method-info">
-                <div class="app-method-name">工商银行储蓄卡</div>
-                <div class="app-method-desc">尾号 6688 · 免绑卡直接支付</div>
-              </div>
-              <div class="app-method-radio checked" id="radioIcbc"></div>
-            </div>
-            <div class="app-method-item" onclick="selectBankCard('ccb')">
-              <div class="app-method-icon ccb">
-                <svg viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="12" rx="2" stroke="#0052D9" stroke-width="1.4"/><path d="M3 9h16" stroke="#0052D9" stroke-width="1.4"/><path d="M7 13h3" stroke="#0052D9" stroke-width="1.4" stroke-linecap="round"/></svg>
-              </div>
-              <div class="app-method-info">
-                <div class="app-method-name">建设银行储蓄卡</div>
-                <div class="app-method-desc">尾号 3355 · 免绑卡直接支付</div>
-              </div>
-              <div class="app-method-radio" id="radioCcb"></div>
-            </div>
-          </div>
-          <button class="app-confirm-btn fade-up" style="animation-delay:0.15s;" onclick="goToBankApp()">确认付款</button>
-          <div class="app-secure">
-            <img src="wqf-avatar.png" style="width:16px;height:16px;border-radius:3px;">
-            腾讯微企付安全支付
-          </div>
-        </div>
-      </div>
+      <!-- s2: 预留过渡页（当前流程直接从收银台跳转银行支付） -->
+      <div id="s2" class="screen"></div>
 
       <!-- s3: 银行APP -->
       <div id="s3" class="screen">
         <div class="nav-bar" style="background:#D4000E;">
-          <button class="back-btn" onclick="goScreen(2)" style="background:rgba(255,255,255,0.15);"><svg viewBox="0 0 20 20" fill="none"><path d="M12.5 15.5L7 10l5.5-5.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="back-btn" onclick="goScreen(1)" style="background:rgba(255,255,255,0.15);"><svg viewBox="0 0 20 20" fill="none"><path d="M12.5 15.5L7 10l5.5-5.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <div class="nav-title" style="color:#fff;" id="bankTitle">工商银行</div>
         </div>
         <div class="bank-app">
@@ -1109,13 +1732,30 @@ body {
     </div>
     <div class="qr-overlay-amount"><span class="yen">¥</span> <span id="qrOvAmount">0.00</span></div>
     <div class="qr-overlay-orderno" id="qrOvOrderNo">订单号: -</div>
+
+    <div class="paper-ticket-preview">
+      <div class="ticket-preview-head">
+        <div class="ticket-preview-title">线下提货单</div>
+        <div class="ticket-preview-tag">客户持单扫码</div>
+      </div>
+      <div class="ticket-preview-body">
+        <div class="ticket-preview-lines">
+          <div class="ticket-line"><strong>订单：</strong><span id="paperTicketOrderNo">-</span></div>
+          <div class="ticket-line"><strong>金额：</strong><span id="paperTicketAmount">¥ 0.00</span></div>
+          <div class="ticket-line"><strong>商品：</strong><span id="paperTicketDesc">-</span></div>
+        </div>
+        <div class="ticket-qr-mini" aria-hidden="true"></div>
+      </div>
+      <div class="ticket-tip">店员先打印纸质提货单，客户使用微信扫描单据右下角二维码后，进入微企付收银台继续付款。</div>
+    </div>
+
     <div class="qr-overlay-canvas-wrap" onclick="simulateScan()">
       <canvas id="qrOvCanvas" width="400" height="400" style="width:180px;height:180px;border-radius:8px;border:1px solid var(--border);"></canvas>
-      <div class="hint">点击二维码模拟扫码</div>
+      <div class="hint">点击这里，模拟扫描提货单二维码</div>
     </div>
-    <button onclick="simulateScan()" style="margin:12px 0 4px;padding:10px 32px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.15s;display:flex;align-items:center;gap:6px;justify-content:center;">
+    <button onclick="simulateScan()" style="margin:12px 0 4px;padding:10px 24px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.15s;display:flex;align-items:center;gap:6px;justify-content:center;">
       <svg viewBox="0 0 16 16" fill="none" style="width:16px;height:16px;"><path d="M4 2H2v4h2V2zm0 8H2v4h2v-4zm8-8h-2v4h2V2zm0 8h-2v4h2v-4zM6 2h4v2H6V2zm0 10h4v2H6v-2z" fill="currentColor"/></svg>
-      点击这里，模拟客户扫码支付
+      点击这里，模拟客户扫描纸质提货单支付
     </button>
     <div class="qr-overlay-expire">有效期 <span class="t" id="qrOvTimer">05:00</span></div>
     <div class="qr-overlay-powered">由 <img src="wqf-avatar.png" style="width:16px;height:16px;border-radius:3px;vertical-align:-2px;"> <span class="wtag" style="background:var(--brand);">微企付</span> 提供安全支付能力</div>
@@ -1161,10 +1801,12 @@ const CAT_ICONS = {
 let currentCat = 'laptop';
 let selectedItems = new Set(); // 索引 "cat-index"
 let orderNo = '';
-let selectedBank = 'icbc';
+let selectedBank = 'cmb';
 const bankMap = {
-  icbc: { name: '工商银行', tail: '6688', title: '工商银行', color: '#D4000E' },
-  ccb: { name: '建设银行', tail: '3355', title: '建设银行', color: '#0052D9' },
+  cmb: { name: '招商银行', title: '招商银行', color: '#D4000E' },
+  icbc: { name: '工商银行', title: '工商银行', color: '#D4000E' },
+  boc: { name: '中国银行', title: '中国银行', color: '#C62828' },
+  ccb: { name: '建设银行', title: '建设银行', color: '#0052D9' },
 };
 
 // ==================== 初始化 ====================
@@ -1285,8 +1927,10 @@ function submitOrder() {
     detailRows += `<div class="done-row"><span class="dl">${CAT_LABELS[cat]}</span><span class="dv">${p.name} · ${p.condition}</span></div>`;
   });
   detailRows += `<div class="done-row"><span class="dl">订单编号</span><span class="dv mono">${orderNo}</span></div>`;
+  detailRows += `<div class="done-row"><span class="dl">支付触发</span><span class="dv">纸质提货单二维码</span></div>`;
   detailRows += `<div class="done-row"><span class="dl">合计金额</span><span class="dv price">¥ ${fmtTotal}</span></div>`;
   document.getElementById('doneDetail').innerHTML = detailRows;
+  document.getElementById('doneDesc').innerHTML = '请先打印线下提货单，并引导客户扫描单据右下角二维码<br>进入微企付收银台完成支付';
 
   // 切状态
   document.getElementById('staffBody').dataset.state = 'ordered';
@@ -1302,6 +1946,9 @@ function showQROverlay() {
   const fmt = total.toLocaleString('zh-CN', {minimumFractionDigits:2});
   document.getElementById('qrOvAmount').textContent = fmt;
   document.getElementById('qrOvOrderNo').textContent = '订单号: ' + orderNo;
+  document.getElementById('paperTicketOrderNo').textContent = orderNo;
+  document.getElementById('paperTicketAmount').textContent = '¥ ' + fmt;
+  document.getElementById('paperTicketDesc').textContent = getOrderDesc();
   generateQR();
   startQRTimer();
   document.getElementById('qrOverlay').classList.add('show');
@@ -1362,10 +2009,7 @@ function simulateScan() {
 
   // 填充手机端数据
   document.getElementById('c1Amount').textContent = fmt;
-  document.getElementById('c1Actual').textContent = fmt;
-  document.getElementById('c1Desc').textContent = desc;
-  document.getElementById('c2Amount').textContent = fmt;
-  document.getElementById('c2Desc').textContent = desc;
+  document.getElementById('c1Desc').textContent = '侠客汇数码交易平台';
 
   showLoading('正在打开微企付收银台…', () => goScreen(1), 1200);
 }
@@ -1387,29 +2031,53 @@ function showLoading(text, cb, delay) {
 function selectPay(mode) { /* 单一微企付模式 */ }
 
 function confirmPay() {
-  showLoading('正在跳转微企付…', () => goScreen(2), 800);
+  document.getElementById('geoModal').classList.add('show');
+}
+
+function hideGeoModal() {
+  document.getElementById('geoModal').classList.remove('show');
+}
+
+function allowGeoPermission() {
+  hideGeoModal();
+  showLoading('正在获取地理位置…', () => {
+    goToBankApp(true);
+  }, 900);
 }
 
 // ==================== 微企付APP ====================
 function selectBankCard(bank) {
   selectedBank = bank;
-  document.getElementById('radioIcbc').classList.toggle('checked', bank === 'icbc');
-  document.getElementById('radioCcb').classList.toggle('checked', bank === 'ccb');
+  const radioMap = {
+    cmb: document.getElementById('radioCmb'),
+    icbc: document.getElementById('radioIcbc'),
+    boc: document.getElementById('radioBoc'),
+    ccb: document.getElementById('radioCcb'),
+  };
+  Object.entries(radioMap).forEach(([key, el]) => {
+    if (el) el.classList.toggle('checked', key === bank);
+  });
 }
 
-function goToBankApp() {
+function goToBankApp(fromGeoCheck) {
   const bank = bankMap[selectedBank];
   const total = getTotal();
   const fmt = total.toLocaleString('zh-CN', {minimumFractionDigits:2});
-  showLoading('正在跳转' + bank.title + '…', () => {
+  const launch = () => {
     document.getElementById('bankTitle').textContent = bank.title;
     document.getElementById('c3Amount').textContent = fmt;
-    document.getElementById('c3PayAcc').textContent = bank.name + ' **** ' + bank.tail;
+    document.getElementById('c3PayAcc').textContent = bank.name;
     document.getElementById('c3OrderNo').textContent = orderNo;
     document.getElementById('c3PwdAmount').textContent = '¥ ' + fmt;
-    document.getElementById('bankSecLabel').textContent = '中国' + bank.title + '安全支付';
+    document.getElementById('bankSecLabel').textContent = bank.title + '安全支付';
     goScreen(3);
-  }, 1200);
+  };
+
+  if (fromGeoCheck) {
+    showLoading('位置校验通过，正在发起支付…', launch, 900);
+  } else {
+    showLoading('正在跳转' + bank.title + '…', launch, 1200);
+  }
 }
 
 // ==================== 银行APP确认 ====================
@@ -1439,7 +2107,7 @@ function showSuccess() {
     String(now.getSeconds()).padStart(2,'0');
 
   document.getElementById('c4Amount').textContent = fmt;
-  document.getElementById('c4Bank').textContent = bank.name + ' (' + bank.tail + ')';
+  document.getElementById('c4Bank').textContent = bank.name;
   document.getElementById('c4OrderNo').textContent = orderNo;
   document.getElementById('c4Time').textContent = timeStr;
   goScreen(4);
@@ -1465,20 +2133,21 @@ function syncStaffPaid(timeStr) {
 function resetAll() {
   selectedItems.clear();
   orderNo = '';
-  selectedBank = 'icbc';
+  selectedBank = 'cmb';
   document.getElementById('staffBody').dataset.state = 'form';
   updateStaffStep(0);
   renderProducts();
   updateCart();
   goScreen(0);
   hideQROverlay();
-  selectBankCard('icbc');
+  hideGeoModal();
+  selectBankCard('cmb');
 
   // 重置左侧订单卡片
   const card = document.getElementById('doneCard');
   card.classList.remove('paid');
   document.getElementById('doneTitle').textContent = '订单已创建';
-  document.getElementById('doneDesc').innerHTML = '请引导客户使用微信扫描二维码<br>完成微企付支付';
+  document.getElementById('doneDesc').innerHTML = '请先打印线下提货单，并引导客户扫描单据右下角二维码<br>进入微企付收银台完成支付';
   const btnQr = document.getElementById('btnQr');
   btnQr.classList.remove('disabled');
   btnQr.textContent = '再次展示付款码';
