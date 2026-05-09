@@ -1003,6 +1003,17 @@ body {
   background: #07C160;
 }
 
+.pay-logo-box.wqf-brand {
+  background: #E8FFF0;
+  border: 1px solid rgba(7,193,96,0.16);
+}
+
+.pay-logo-box.wqf-brand img {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
 .pay-logo-box.bank-card {
   background: #2DA8F8;
 }
@@ -1232,6 +1243,198 @@ body {
   color: #5D6470;
 }
 
+.h5-landing-screen {
+  background: #F5F6F8;
+  padding: 18px 0 28px;
+}
+
+.h5-badge {
+  width: fit-content;
+  margin: 0 auto;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(7,193,96,0.10);
+  color: #07C160;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.h5-title {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.h5-desc {
+  margin: 10px 24px 0;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-2);
+}
+
+.h5-flow-note,
+.landing-order-card,
+.landing-channel-card,
+.landing-enter-btn,
+.landing-footnote {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.h5-flow-note {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #FFF7E8;
+  color: #A15C00;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.landing-order-card {
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #FFFFFF;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+}
+
+.landing-order-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.landing-order-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.landing-order-tag {
+  font-size: 11px;
+  color: #07C160;
+  background: rgba(7,193,96,0.10);
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.landing-order-lines {
+  display: grid;
+  gap: 8px;
+}
+
+.landing-order-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+
+.landing-order-row span:first-child {
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+.landing-order-row strong {
+  color: var(--text-1);
+  text-align: right;
+}
+
+.landing-channel-card {
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+  cursor: pointer;
+}
+
+.landing-channel-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.landing-logo-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #E8FFF0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.landing-logo-wrap img {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.landing-channel-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.landing-channel-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+
+.landing-channel-arrow {
+  width: 9px;
+  height: 9px;
+  border-top: 1.5px solid #B8B8B8;
+  border-right: 1.5px solid #B8B8B8;
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.landing-enter-btn {
+  margin-top: 18px;
+  width: calc(100% - 32px);
+  height: 52px;
+  border: none;
+  border-radius: 12px;
+  background: #15C15D;
+  color: #FFFFFF;
+  font-size: 17px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+.landing-footnote {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-3);
+}
+
+.wqf-powered-logo {
+  width: 16px;
+  height: 16px;
+  vertical-align: -3px;
+}
+
 .geo-modal {
   position: absolute;
   inset: 0;
@@ -1441,12 +1644,22 @@ body {
   }
   .payer-card,
   .pay-method-panel,
-  .bottom-pay-area {
+  .bottom-pay-area,
+  .h5-flow-note,
+  .landing-order-card,
+  .landing-channel-card,
+  .landing-footnote {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+  .landing-enter-btn {
+    width: calc(100% - 24px);
     margin-left: 12px;
     margin-right: 12px;
   }
   .pay-block-head,
-  .geo-notice {
+  .geo-notice,
+  .h5-desc {
     margin-left: 16px;
     margin-right: 16px;
   }
@@ -1510,7 +1723,7 @@ body {
             <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div class="done-title" id="doneTitle">订单已创建</div>
-          <div class="done-desc" id="doneDesc">请先打印线下提货单，并引导客户扫描单据右下角二维码<br>进入微企付收银台完成支付</div>
+          <div class="done-desc" id="doneDesc">请先打印线下提货单，并引导客户扫描单据右下角二维码<br>先进入 H5 落地页，选择微企付后再进入收银台完成支付</div>
         </div>
         <div class="done-detail" id="doneDetail"></div>
         <div class="done-actions">
@@ -1562,14 +1775,14 @@ body {
             <svg viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="18" r="1" fill="currentColor"/><path d="M9 5h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
           <div class="wait-title">等待店员下单</div>
-          <div class="wait-desc">店员在左侧PC端选择商品、打印提货单后，<br>客户扫描单据二维码即可进入微企付收银台完成支付。</div>
+          <div class="wait-desc">店员在左侧PC端选择商品、打印提货单后，<br>客户扫描单据二维码会先进入 H5 落地页，选择微企付后再进入收银台完成支付。</div>
         </div>
       </div>
 
       <!-- s1: 微企付收银台 -->
       <div id="s1" class="screen">
         <div class="nav-bar">
-          <button class="back-btn" onclick="goScreen(0)"><svg viewBox="0 0 20 20" fill="none"><path d="M12.5 15.5L7 10l5.5-5.5" stroke="var(--text-1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="back-btn" onclick="goScreen(2)"><svg viewBox="0 0 20 20" fill="none"><path d="M12.5 15.5L7 10l5.5-5.5" stroke="var(--text-1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <div class="nav-title" style="text-align:center;">微企付</div>
           <div class="nav-right"></div>
         </div>
@@ -1598,8 +1811,8 @@ body {
           <div class="pay-method-panel">
             <div class="pay-row">
               <div class="pay-left">
-                <div class="pay-logo-box wechat">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M7.2 17.7c-3.1 0-5.7-2.2-5.7-5s2.6-5 5.7-5c1.6 0 3 .5 4 1.4 1.1-1.8 3.3-3.1 5.8-3.1 3.6 0 6.5 2.5 6.5 5.7 0 3.1-2.9 5.7-6.5 5.7-.7 0-1.4-.1-2-.3l-2.9 1.7.8-2.2c-.7-.4-1.4-.9-1.8-1.5-.8 1.6-2.6 2.6-4.9 2.6z" fill="#fff"/></svg>
+                <div class="pay-logo-box wqf-brand">
+                  <img src="wqf-logo.png" alt="微企付 logo">
                 </div>
                 <div>
                   <div class="pay-title">微信支付｜经营账户</div>
@@ -1658,8 +1871,47 @@ body {
         </div>
       </div>
 
-      <!-- s2: 预留过渡页（当前流程直接从收银台跳转银行支付） -->
-      <div id="s2" class="screen"></div>
+      <!-- s2: H5 落地页 -->
+      <div id="s2" class="screen">
+        <div class="nav-bar">
+          <button class="back-btn" onclick="goScreen(0)"><svg viewBox="0 0 20 20" fill="none"><path d="M12.5 15.5L7 10l5.5-5.5" stroke="var(--text-1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="nav-title" style="text-align:center;">支付确认</div>
+          <div class="nav-right"></div>
+        </div>
+        <div class="screen-body h5-landing-screen">
+          <div class="h5-badge">H5 落地页</div>
+          <div class="h5-title">扫码后先进入 H5 落地页</div>
+          <div class="h5-desc">客户扫描纸质提货单二维码后，会先进入 H5 落地页；确认选择「微企付」后，才进入微企付收银台，不能直接跳进收银台。</div>
+
+          <div class="h5-flow-note">当前演示流程：纸质提货单二维码 → H5 落地页 → 选择微企付 → 微企付收银台 → 地理位置校验 → 银行支付。</div>
+
+          <div class="landing-order-card">
+            <div class="landing-order-head">
+              <div class="landing-order-title">订单信息</div>
+              <div class="landing-order-tag">扫码承接页</div>
+            </div>
+            <div class="landing-order-lines">
+              <div class="landing-order-row"><span>订单号</span><strong id="landingOrderNo">-</strong></div>
+              <div class="landing-order-row"><span>订单金额</span><strong id="landingAmount">¥ 0.00</strong></div>
+              <div class="landing-order-row"><span>商品信息</span><strong id="landingDesc">-</strong></div>
+            </div>
+          </div>
+
+          <div class="landing-channel-card" onclick="enterCashierFromLanding()">
+            <div class="landing-channel-left">
+              <div class="landing-logo-wrap"><img src="wqf-logo.png" alt="微企付 logo"></div>
+              <div>
+                <div class="landing-channel-name">微企付</div>
+                <div class="landing-channel-sub">选择后进入微企付收银台继续付款</div>
+              </div>
+            </div>
+            <div class="landing-channel-arrow"></div>
+          </div>
+
+          <button class="landing-enter-btn" onclick="enterCashierFromLanding()">选择微企付继续</button>
+          <div class="landing-footnote">说明：此页为 H5 落地页示意，不能直接省略，否则扫码后会少一层真实承接流程。</div>
+        </div>
+      </div>
 
       <!-- s3: 银行APP -->
       <div id="s3" class="screen">
@@ -1674,7 +1926,7 @@ body {
             <div class="bank-app-amount"><span class="bank-yen">¥</span><span id="c3Amount">0.00</span></div>
           </div>
           <div class="bank-detail-card fade-up" style="animation-delay:0.08s;">
-            <div class="bank-d-row"><span class="bank-d-label">付款账户</span><span class="bank-d-value" id="c3PayAcc">工商银行 **** 6688</span></div>
+            <div class="bank-d-row"><span class="bank-d-label">付款账户</span><span class="bank-d-value" id="c3PayAcc">工商银行</span></div>
             <div class="bank-d-row"><span class="bank-d-label">收款账户</span><span class="bank-d-value">微企付 **** 1888</span></div>
             <div class="bank-d-row"><span class="bank-d-label">交易类型</span><span class="bank-d-value">扫码转账</span></div>
             <div class="bank-d-row"><span class="bank-d-label">备注</span><span class="bank-d-value" id="c3OrderNo" style="font-family:var(--mono);font-size:12px;">-</span></div>
@@ -1746,7 +1998,7 @@ body {
         </div>
         <div class="ticket-qr-mini" aria-hidden="true"></div>
       </div>
-      <div class="ticket-tip">店员先打印纸质提货单，客户使用微信扫描单据右下角二维码后，进入微企付收银台继续付款。</div>
+      <div class="ticket-tip">店员先打印纸质提货单，客户使用微信扫描单据右下角二维码后，会先进入 H5 落地页，选择微企付后再进入收银台继续付款。</div>
     </div>
 
     <div class="qr-overlay-canvas-wrap" onclick="simulateScan()">
@@ -1758,7 +2010,7 @@ body {
       点击这里，模拟客户扫描纸质提货单支付
     </button>
     <div class="qr-overlay-expire">有效期 <span class="t" id="qrOvTimer">05:00</span></div>
-    <div class="qr-overlay-powered">由 <img src="wqf-avatar.png" style="width:16px;height:16px;border-radius:3px;vertical-align:-2px;"> <span class="wtag" style="background:var(--brand);">微企付</span> 提供安全支付能力</div>
+    <div class="qr-overlay-powered">由 <img src="wqf-logo.png" class="wqf-powered-logo" alt="微企付 logo"> <span class="wtag" style="background:var(--brand);">微企付</span> 提供安全支付能力</div>
   </div>
 </div>
 
@@ -1928,9 +2180,10 @@ function submitOrder() {
   });
   detailRows += `<div class="done-row"><span class="dl">订单编号</span><span class="dv mono">${orderNo}</span></div>`;
   detailRows += `<div class="done-row"><span class="dl">支付触发</span><span class="dv">纸质提货单二维码</span></div>`;
+  detailRows += `<div class="done-row"><span class="dl">扫码承接</span><span class="dv">H5 落地页 → 微企付收银台</span></div>`;
   detailRows += `<div class="done-row"><span class="dl">合计金额</span><span class="dv price">¥ ${fmtTotal}</span></div>`;
   document.getElementById('doneDetail').innerHTML = detailRows;
-  document.getElementById('doneDesc').innerHTML = '请先打印线下提货单，并引导客户扫描单据右下角二维码<br>进入微企付收银台完成支付';
+  document.getElementById('doneDesc').innerHTML = '请先打印线下提货单，并引导客户扫描单据右下角二维码<br>先进入 H5 落地页，选择微企付后再进入收银台完成支付';
 
   // 切状态
   document.getElementById('staffBody').dataset.state = 'ordered';
@@ -2007,11 +2260,18 @@ function simulateScan() {
   const fmt = total.toLocaleString('zh-CN', {minimumFractionDigits:2});
   const desc = getOrderDesc();
 
-  // 填充手机端数据
+  // 填充 H5 落地页与手机端数据
+  document.getElementById('landingOrderNo').textContent = orderNo;
+  document.getElementById('landingAmount').textContent = '¥ ' + fmt;
+  document.getElementById('landingDesc').textContent = desc;
   document.getElementById('c1Amount').textContent = fmt;
   document.getElementById('c1Desc').textContent = '侠客汇数码交易平台';
 
-  showLoading('正在打开微企付收银台…', () => goScreen(1), 1200);
+  showLoading('正在打开 H5 落地页…', () => goScreen(2), 1100);
+}
+
+function enterCashierFromLanding() {
+  showLoading('已选择微企付，正在进入收银台…', () => goScreen(1), 900);
 }
 
 // ==================== 手机端导航 ====================
@@ -2147,7 +2407,7 @@ function resetAll() {
   const card = document.getElementById('doneCard');
   card.classList.remove('paid');
   document.getElementById('doneTitle').textContent = '订单已创建';
-  document.getElementById('doneDesc').innerHTML = '请先打印线下提货单，并引导客户扫描单据右下角二维码<br>进入微企付收银台完成支付';
+  document.getElementById('doneDesc').innerHTML = '请先打印线下提货单，并引导客户扫描单据右下角二维码<br>先进入 H5 落地页，选择微企付后再进入收银台完成支付';
   const btnQr = document.getElementById('btnQr');
   btnQr.classList.remove('disabled');
   btnQr.textContent = '再次展示付款码';
